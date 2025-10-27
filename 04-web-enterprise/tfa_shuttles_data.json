@@ -1,0 +1,27 @@
+{
+    "users": {
+        "admin": {
+            "username": "admin",
+            "name": "Admin User",
+            "password": "scrypt:32768:8:1$RB38GUi7mcyEi7zu$814eaee6c5cb6d712aa06f11169c3825903085fb125672c058f611715b63319cae202bf504c472c02c036c60c64527c5d7ce05407b06c8daf536be7ff3938fe6",
+            "is_admin": true,
+            "is_driver": false,
+            "registered_address": "Admin Headquarters",
+            "travel_allowance": 0,
+            "penalties": []
+        },
+        "Nash": {
+            "username": "Nash",
+            "name": "Naasif",
+            "password": "scrypt:32768:8:1$ZnJNuEMiV5OHJGXK$eec7955c92313df590789d8adf031b34d7283b0d2ac8a89104a928f6f4fdc6e9445d97485c67dbe1ecee4cd2a26a36a9691713a35682282473bf4a2ab353947d",
+            "is_admin": false,
+            "is_driver": false,
+            "registered_address": "41 Dencworth road Athlone",
+            "travel_allowance": 0,
+            "penalties": []
+        }
+    },
+    "bookings": [],
+    "drivers": {},
+    "driver_bookings": {}
+}

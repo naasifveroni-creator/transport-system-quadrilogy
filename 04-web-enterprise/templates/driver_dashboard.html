@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Dashboard - TFA Shuttles</title>
+    <style>
+        body { background-color: #36454f; color: white; font-family: Arial; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 10px 15px; margin: 5px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .booking { background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .status { padding: 5px 10px; border-radius: 3px; font-weight: bold; }
+        .in-progress { background: #3498db; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Driver Dashboard - {{ current_user.get_id() }}</h1>
+            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+        </div>
+
+        <h2>Assigned Trips</h2>
+        {% if bookings %}
+            {% for booking in bookings %}
+            <div class="booking">
+                <p><strong>User:</strong> {{ booking.user_id }}</p>
+                <p><strong>Route:</strong> {{ booking.from_location }} → {{ booking.to_location }}</p>
+                <p><strong>Time:</strong> {{ booking.date_time }}</p>
+                <p><strong>Status:</strong> 
+                    <span class="status {{ booking.status }}">{{ booking.status.upper() }}</span>
+                </p>
+                {% if booking.status == 'in-progress' %}
+                <form method="POST" action="{{ url_for('complete_trip') }}">
+                    <input type="hidden" name="booking_id" value="{{ booking.user_id }}-{{ booking.from_location }}-{{ booking.to_location }}-{{ booking.date_time }}">
+                    <button type="submit" class="btn" style="background: #27ae60;">Complete Trip</button>
+                </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No assigned trips at the moment.</p>
+        {% endif %}
+
+        <div style="margin-top: 30px;">
+            <h3>Driver Tools</h3>
+            <button onclick="loadWaybills()" class="btn">Check Waybills</button>
+            <button onclick="loadTripHistory()" class="btn">View Trip History</button>
+            <div id="waybills-section" style="display: none; margin-top: 15px;"></div>
+            <div id="history-section" style="display: none; margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+    async function loadWaybills() {
+        const response = await fetch('/get_driver_waybills');
+        const waybills = await response.json();
+        const section = document.getElementById('waybills-section');
+        
+        if (waybills.length > 0) {
+            section.innerHTML = '<h4>New Waybills</h4>';
+            waybills.forEach(waybill => {
+                section.innerHTML += `<div class="booking">
+                    <p><strong>Date:</strong> ${waybill.date} | <strong>Time:</strong> ${waybill.time}</p>
+                    <p><strong>Route:</strong> ${waybill.pickup} → ${waybill.dropoff}</p>
+                    <p><strong>Cost:</strong> R ${waybill.cost || '0.00'}</p>
+                </div>`;
+            });
+        } else {
+            section.innerHTML = '<p>No new waybills.</p>';
+        }
+        section.style.display = 'block';
+    }
+
+    async function loadTripHistory() {
+        const response = await fetch('/get_driver_trip_history');
+        const history = await response.json();
+        const section = document.getElementById('history-section');
+        
+        if (history.length > 0) {
+            section.innerHTML = '<h4>Trip History</h4>';
+            history.forEach(trip => {
+                section.innerHTML += `<div class="booking">
+                    <p><strong>Date:</strong> ${trip.date} | <strong>Time:</strong> ${trip.time}</p>
+                    <p><strong>Route:</strong> ${trip.pickup} → ${trip.dropoff}</p>
+                    <p><strong>Cost:</strong> R ${trip.cost || '0.00'}</p>
+                </div>`;
+            });
+        } else {
+            section.innerHTML = '<p>No trip history.</p>';
+        }
+        section.style.display = 'block';
+    }
+    </script>
+</body>
+</html>
