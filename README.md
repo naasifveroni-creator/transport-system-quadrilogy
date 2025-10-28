@@ -22,5 +22,6 @@ Based on this multi-platform architecture expertise, I offer:
 ### 🏗️ Architecture Consulting - R40,000/month
 *Multi-platform strategy & system design*
 
-**Contact:** [Your Email/LinkedIn]
-**Portfolio:** [Your LinkedIn Profile]
+**Contact:** strategicshift.consulting@outlook.com
+**Portfolio:** https://www.linkedin.com/in/naasif-lakay
+**GitHub:** https://github.com/naasifveroni-creator
