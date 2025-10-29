@@ -25,3 +25,14 @@ Based on this multi-platform architecture expertise, I offer:
 **Contact:** strategicshift.consulting@outlook.com
 **Portfolio:** https://www.linkedin.com/in/naasif-lakay
 **GitHub:** https://github.com/naasifveroni-creator
+
+## 📊 Business Intelligence & Analytics
+
+StrategicShift includes comprehensive analytics dashboards that transform raw data into actionable business intelligence:
+
+- **Market Validation:** Real user engagement metrics
+- **ROI Projections:** Revenue potential calculations  
+- **Geographic Intelligence:** Local and global market insights
+- **Technical Performance:** Cross-platform optimization validation
+
+[View Detailed Analytics Dashboard](./ANALYTICS.md)
