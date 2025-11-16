@@ -29,7 +29,7 @@
         {% if bookings %}
             {% for booking in bookings %}
             <div class="booking">
-                <p><strong>From:</strong> {{ booking.from_location }} → <strong>To:</strong> {{ booking.to_location }}</p>
+                <p><strong>Pickup:</strong> {{ booking.pickup }} → <strong>Dropoff:</strong> {{ booking.dropoff }}</p>
                 <p><strong>Time:</strong> {{ booking.date_time }}</p>
                 <p><strong>Status:</strong> 
                     <span class="status {{ booking.status }}">{{ booking.status.upper() }}</span>

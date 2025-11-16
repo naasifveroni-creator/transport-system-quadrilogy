@@ -1,3 +1,13 @@
+from plugins.time_slot_manager import TimeSlotManager
+from plugins.booking_enhancements import get_available_time_slots, validate_booking_time
+from plugins.business_analytics import BusinessAnalytics
+from plugins.user_manager import UserManager
+from plugins.admin_enhancements import AdminUserManager
+from plugins.route_optimizer import RouteOptimizer
+from plugins.realtime_tracking import RealTimeTracker
+from plugins.campaign_registration import CampaignBulkRegistration
+from plugins.billing_mis import BillingMIS
+
 import json
 import csv
 import os
@@ -82,6 +92,15 @@ def save_data(data):
     with open('tfa_shuttles_data.json', 'w') as f:
         json.dump(data, f, indent=4)
 
+
+# Initialize All Plugins
+time_slot_manager = TimeSlotManager("transport.db")
+business_analytics = BusinessAnalytics("transport.db")
+admin_user_manager = AdminUserManager(load_data, save_data)
+route_optimizer = RouteOptimizer()
+real_time_tracker = RealTimeTracker()
+campaign_registrar = CampaignBulkRegistration(load_data, save_data)
+billing_mis = BillingMIS()
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -347,14 +366,29 @@ def upload_waybill():
 
     try:
         waybill_content = waybill_file.stream.read().decode('utf-8')
-        waybill_data = list(csv.DictReader(io.StringIO(waybill_content)))
+        raw_waybill_data = list(csv.DictReader(io.StringIO(waybill_content)))
+        
+        # TRANSFORM DATA - THIS FIXES THE UNDEFINED ISSUE
+        transformed_waybill_data = []
+        for row in raw_waybill_data:
+            transformed_row = {
+                'Date': row.get('Date') or row.get('date') or '',
+                'Time': row.get('Time') or row.get('time') or '',
+                'Pickup': row.get('Pickup') or row.get('pickup') or row.get('From') or '',
+                'Dropoff': row.get('Dropoff') or row.get('dropoff') or row.get('To') or '',
+                'Cost': float(row.get('Cost') or row.get('cost') or 0),
+                'Driver_ID': row.get('Driver_ID') or row.get('driver_id') or driver_id,
+                'Route': row.get('Route') or row.get('route') or f"{row.get('Pickup', '')} to {row.get('Dropoff', '')}"
+            }
+            transformed_waybill_data.append(transformed_row)
+        
     except Exception as e:
         return f"Error processing CSV: {e}", 400
 
     if 'waybills' not in data['drivers'][driver_id]:
         data['drivers'][driver_id]['waybills'] = []
 
-    data['drivers'][driver_id]['waybills'].extend(waybill_data)
+    data['drivers'][driver_id]['waybills'].extend(transformed_waybill_data)
     save_data(data)
 
     return redirect(url_for('admin_dashboard'))
@@ -377,8 +411,8 @@ def export_data():
             booking.get('user_id', 'N/A'),
             booking.get('driver_id', 'N/A'),
             booking.get('date_time', 'N/A'),
-            booking.get('from_location', 'N/A'),
-            booking.get('to_location', 'N/A'),
+            booking.get('pickup', 'N/A'),
+            booking.get('dropoff', 'N/A'),
             booking.get('status', 'N/A'),
             booking.get('trip_start_time', 'N/A'),
             booking.get('trip_end_time', 'N/A')
@@ -402,8 +436,8 @@ def export_invoicing_data():
     for booking in completed_bookings:
         writer.writerow([
             booking.get('user_id', 'N/A'),
-            booking.get('from_location', 'N/A'),
-            booking.get('to_location', 'N/A'),
+            booking.get('pickup', 'N/A'),
+            booking.get('dropoff', 'N/A'),
             booking.get('trip_start_time', 'N/A'),
             booking.get('trip_end_time', 'N/A')
         ])
@@ -652,18 +686,18 @@ def booking():
     if request.method == 'POST':
         driver_id = 'unassigned'
         date_time = request.form['date_time']
-        from_location = request.form['from_location']
-        to_location = request.form['to_location']
+        pickup = request.form['pickup']
+        dropoff = request.form['dropoff']
 
-        if not all([date_time, from_location, to_location]):
+        if not all([date_time, pickup, dropoff]):
             return render_template('booking.html', locations=all_locations, time_slots=TIME_SLOTS, error="All fields are required.")
 
         new_booking = {
             'user_id': user_id,
             'driver_id': driver_id,
             'date_time': date_time,
-            'from_location': from_location,
-            'to_location': to_location,
+            'pickup': pickup,
+            'dropoff': dropoff,
             'status': 'unassigned'
         }
 
@@ -709,7 +743,7 @@ def complete_trip():
 
     booking_found = False
     for booking in bookings:
-        unique_id = f"{booking['user_id']}-{booking['from_location']}-{booking['to_location']}-{booking['date_time']}"
+        unique_id = f"{booking['user_id']}-{booking['pickup']}-{booking['dropoff']}-{booking['date_time']}"
 
         if unique_id == booking_id and booking['status'] == 'in-progress':
             booking['status'] = 'completed'
@@ -723,5 +757,42 @@ def complete_trip():
     else:
         return "In-progress booking not found", 404
 
-if __name__ == '__main__':
+# ===== PLUGIN ROUTES =====
+
+@app.route('/admin/time_slots')
+@login_required
+def admin_time_slots():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for('login'))
+    time_slot_mgr = TimeSlotManager("transport.db")
+    global_settings = time_slot_mgr.get_global_settings()
+    campaign_slots = time_slot_mgr.get_campaign_slots()
+    return render_template('admin_time_slots.html', global_settings=global_settings, campaign_slots=campaign_slots)
+
+@app.route('/admin/analytics')
+@login_required
+def admin_analytics():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for('login'))
+    business_analytics = BusinessAnalytics("transport.db")
+    metrics = business_analytics.get_dashboard_metrics()
+    return render_template('admin_analytics.html', metrics=metrics)
+
+@app.route('/admin/user_management')
+@login_required
+def admin_user_management():
+    user_mgr = UserManager("transport.db")
+    users = user_mgr.get_all_users()
+    return render_template('admin_user_management.html', users=users)
+    data = load_data()
+    return render_template('admin_user_management.html', users=users)
+
+@app.route('/admin/bulk_register')
+@login_required
+def admin_bulk_register():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for('login'))
+    return render_template('admin_bulk_register.html')
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)

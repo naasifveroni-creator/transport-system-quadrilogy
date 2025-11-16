@@ -24,14 +24,14 @@
             {% for booking in bookings %}
             <div class="booking">
                 <p><strong>User:</strong> {{ booking.user_id }}</p>
-                <p><strong>Route:</strong> {{ booking.from_location }} → {{ booking.to_location }}</p>
+                <p><strong>Route:</strong> {{ booking.pickup }} → {{ booking.dropoff }}</p>
                 <p><strong>Time:</strong> {{ booking.date_time }}</p>
                 <p><strong>Status:</strong> 
                     <span class="status {{ booking.status }}">{{ booking.status.upper() }}</span>
                 </p>
                 {% if booking.status == 'in-progress' %}
                 <form method="POST" action="{{ url_for('complete_trip') }}">
-                    <input type="hidden" name="booking_id" value="{{ booking.user_id }}-{{ booking.from_location }}-{{ booking.to_location }}-{{ booking.date_time }}">
+                    <input type="hidden" name="booking_id" value="{{ booking.user_id }}-{{ booking.pickup }}-{{ booking.dropoff }}-{{ booking.date_time }}">
                     <button type="submit" class="btn" style="background: #27ae60;">Complete Trip</button>
                 </form>
                 {% endif %}
@@ -60,9 +60,9 @@
             section.innerHTML = '<h4>New Waybills</h4>';
             waybills.forEach(waybill => {
                 section.innerHTML += `<div class="booking">
-                    <p><strong>Date:</strong> ${waybill.date} | <strong>Time:</strong> ${waybill.time}</p>
-                    <p><strong>Route:</strong> ${waybill.pickup} → ${waybill.dropoff}</p>
-                    <p><strong>Cost:</strong> R ${waybill.cost || '0.00'}</p>
+                    <p><strong>Date:</strong> ${waybill.Date} | <strong>Time:</strong> ${waybill.Time}</p>
+                    <p><strong>Route:</strong> ${waybill.Pickup} → ${waybill.Dropoff}</p>
+                    <p><strong>Cost:</strong> R ${waybill.Cost || '0.00'}</p>
                 </div>`;
             });
         } else {
@@ -80,9 +80,9 @@
             section.innerHTML = '<h4>Trip History</h4>';
             history.forEach(trip => {
                 section.innerHTML += `<div class="booking">
-                    <p><strong>Date:</strong> ${trip.date} | <strong>Time:</strong> ${trip.time}</p>
-                    <p><strong>Route:</strong> ${trip.pickup} → ${trip.dropoff}</p>
-                    <p><strong>Cost:</strong> R ${trip.cost || '0.00'}</p>
+                    <p><strong>Date:</strong> ${trip.Date} | <strong>Time:</strong> ${trip.Time}</p>
+                    <p><strong>Route:</strong> ${trip.Pickup} → ${trip.Dropoff}</p>
+                    <p><strong>Cost:</strong> R ${trip.Cost || '0.00'}</p>
                 </div>`;
             });
         } else {
