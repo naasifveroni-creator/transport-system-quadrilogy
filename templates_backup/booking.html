@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Trip - TFA Shuttles</title>
+    <style>
+        body { background-color: #36454f; color: white; font-family: Arial; }
+        .container { max-width: 500px; margin: 20px auto; padding: 20px; }
+        input, select { padding: 10px; margin: 5px; width: 100%; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; width: 100%; }
+        .error { color: red; margin-top: 10px; }
+        .btn-back { background: #6c757d; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book Your Trip</h1>
+        <form method="POST" action="/booking">
+            <label>Date & Time:</label>
+            <input type="datetime-local" name="date_time" required>
+            
+            <label>Pickup Location:</label>
+            <select name="pickup" required>
+                <option value="">Select pickup location</option>
+                {% for location in locations %}
+                <option value="{{ location }}">{{ location }}</option>
+                {% endfor %}
+            </select>
+            
+            <label>Dropoff Location:</label>
+            <select name="dropoff" required>
+                <option value="">Select destination</option>
+                {% for location in locations %}
+                <option value="{{ location }}">{{ location }}</option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">Book Trip</button>
+        </form>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        
+        <a href="{{ url_for('user_dashboard') }}">
+            <button class="btn-back">Back to Dashboard</button>
+        </a>
+    </div>
+</body>
+</html>

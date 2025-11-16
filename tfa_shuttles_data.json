@@ -1,0 +1,223 @@
+{
+    "users": {
+        "admin": {
+            "username": "admin",
+            "name": "Admin User",
+            "password": "scrypt:32768:8:1$RB38GUi7mcyEi7zu$814eaee6c5cb6d712aa06f11169c3825903085fb125672c058f611715b63319cae202bf504c472c02c036c60c64527c5d7ce05407b06c8daf536be7ff3938fe6",
+            "is_admin": true,
+            "is_driver": false,
+            "registered_address": "Admin Headquarters",
+            "travel_allowance": 0,
+            "penalties": []
+        },
+        "Nash": {
+            "username": "Nash",
+            "name": "Naasif",
+            "password": "scrypt:32768:8:1$ZnJNuEMiV5OHJGXK$eec7955c92313df590789d8adf031b34d7283b0d2ac8a89104a928f6f4fdc6e9445d97485c67dbe1ecee4cd2a26a36a9691713a35682282473bf4a2ab353947d",
+            "is_admin": false,
+            "is_driver": false,
+            "registered_address": "41 Dencworth road Athlone",
+            "travel_allowance": 0,
+            "penalties": []
+        },
+        "The Driver": {
+            "username": "The Driver",
+            "name": "staff transport",
+            "password": "scrypt:32768:8:1$bh6QRJZ2V1e4N5Qn$0940c4a5300d9e96d340c74d86fca6da5694c3f37145a31e00e706cfbc7b8d3010e5e8a386318b892c0836e78db13d703904fad4c195d71d2b70c068b844dbd0",
+            "is_admin": false,
+            "is_driver": true,
+            "registered_address": "",
+            "travel_allowance": 0,
+            "penalties": []
+        }
+    },
+    "bookings": [
+        {
+            "user_id": "Nash",
+            "driver_id": "unassigned",
+            "date_time": "2025-11-16T10:43",
+            "pickup": "Blvd",
+            "dropoff": "41 Dencworth road Athlone",
+            "status": "in-progress",
+            "trip_start_time": "2025-11-16T13:24:33.865546"
+        },
+        {
+            "user_id": "Nash",
+            "driver_id": "unassigned",
+            "date_time": "2025-11-16T10:56",
+            "pickup": "41 Dencworth road Athlone",
+            "dropoff": "Match Factory",
+            "status": "in-progress",
+            "trip_start_time": "2025-11-16T13:24:35.160531"
+        },
+        {
+            "user_id": "Nash",
+            "driver_id": "unassigned",
+            "date_time": "2025-11-16T11:08",
+            "pickup": "Wembly Sqr",
+            "dropoff": "Match Factory",
+            "status": "in-progress",
+            "trip_start_time": "2025-11-16T13:24:35.700624"
+        },
+        {
+            "user_id": "Nash",
+            "driver_id": "unassigned",
+            "date_time": "2025-11-16T11:47",
+            "pickup": "Match Factory",
+            "dropoff": "Blvd",
+            "status": "in-progress",
+            "trip_start_time": "2025-11-16T13:24:36.401487"
+        },
+        {
+            "user_id": "Nash",
+            "driver_id": "unassigned",
+            "date_time": "2025-11-16T15:01",
+            "pickup": "Match Factory",
+            "dropoff": "Blvd",
+            "status": "unassigned"
+        }
+    ],
+    "drivers": {
+        "The Driver": {
+            "first_name": "staff",
+            "last_name": "transport",
+            "license_plate": "CA -543210",
+            "waybills": [
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "Blvd",
+                    "Dropoff": "41 Dencworth road Athlone",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "41 Dencworth road Athlone",
+                    "Dropoff": "Match Factory",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "Wembly Sqr",
+                    "Dropoff": "Match Factory",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                }
+            ],
+            "trip_history": [
+                {
+                    "User ID": "Nash",
+                    "Driver ID": "unassigned",
+                    "Date/Time": "2025-11-15T04:00",
+                    "From": "41 Dencworth road Athlone",
+                    "To": "Match Factory",
+                    "Status": "in-progress",
+                    "Trip Start Time": "2025-11-14T19:27:46.083432",
+                    "Trip End Time": "N/A"
+                },
+                {
+                    "User ID": "Nash",
+                    "Driver ID": "unassigned",
+                    "Date/Time": "2025-11-15T04:00",
+                    "From": "41 Dencworth road Athlone",
+                    "To": "Match Factory",
+                    "Status": "in-progress",
+                    "Trip Start Time": "2025-11-14T19:27:46.083432",
+                    "Trip End Time": "N/A"
+                },
+                {
+                    "User ID": "Nash",
+                    "Driver ID": "unassigned",
+                    "Date/Time": "2025-11-15T04:00",
+                    "From": "41 Dencworth road Athlone",
+                    "To": "Match Factory",
+                    "Status": "in-progress",
+                    "Trip Start Time": "2025-11-14T19:27:46.083432",
+                    "Trip End Time": "N/A"
+                },
+                {
+                    "User ID": "Nash",
+                    "Driver ID": "unassigned",
+                    "Date/Time": "2025-11-15T04:00",
+                    "From": "41 Dencworth road Athlone",
+                    "To": "N/A",
+                    "Status": "in-progress",
+                    "Trip Start Time": "2025-11-14T19:27:46.083432",
+                    "Trip End Time": "N/A"
+                },
+                {
+                    "User ID": "Nash",
+                    "Driver ID": "unassigned",
+                    "Date/Time": "2025-11-15T18:00",
+                    "From": "N/A",
+                    "To": "Match Factory",
+                    "Status": "unassigned",
+                    "Trip Start Time": "N/A",
+                    "Trip End Time": "N/A"
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "41 Dencworth road Athlone",
+                    "Dropoff": "N/A",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "N/A",
+                    "Dropoff": "Match Factory",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "N/A",
+                    "Dropoff": "41 Dencworth road Athlone",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "Blvd",
+                    "Dropoff": "41 Dencworth road Athlone",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "Blvd",
+                    "Dropoff": "41 Dencworth road Athlone",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                },
+                {
+                    "Date": "",
+                    "Time": "",
+                    "Pickup": "41 Dencworth road Athlone",
+                    "Dropoff": "Match Factory",
+                    "Cost": 0.0,
+                    "Driver_ID": "The Driver",
+                    "Route": " to "
+                }
+            ]
+        }
+    },
+    "driver_bookings": {}
+}

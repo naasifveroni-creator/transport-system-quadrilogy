@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bulk Registration - Admin Dashboard</title>
+</head>
+<body>
+    <h1>Bulk User Registration</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div>
+            <label>Campaign ID:</label>
+            <input type="text" name="campaign_id" required>
+        </div>
+        <div>
+            <label>Campaign Name:</label>
+            <input type="text" name="campaign_name" required>
+        </div>
+        <div>
+            <label>CSV File:</label>
+            <input type="file" name="csv_file" accept=".csv" required>
+        </div>
+        <button type="submit">Upload and Register</button>
+    </form>
+
+    {% if results %}
+    <h2>Registration Results</h2>
+    <p>Total Processed: {{ results.total_processed }}</p>
+    <p>Successful: {{ results.successful|length }}</p>
+    <p>Failed: {{ results.failed|length }}</p>
+    
+    {% if results.failed %}
+    <h3>Failed Registrations:</h3>
+    <ul>
+        {% for fail in results.failed %}
+        <li>{{ fail.username }}: {{ fail.error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+</body>
+</html>
