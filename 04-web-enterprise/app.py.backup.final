@@ -1,7 +1,6 @@
 from plugins.time_slot_manager import TimeSlotManager
 from plugins.booking_enhancements import get_available_time_slots, validate_booking_time
 from plugins.business_analytics import BusinessAnalytics
-from plugins.user_manager import UserManager
 from plugins.admin_enhancements import AdminUserManager
 from plugins.route_optimizer import RouteOptimizer
 from plugins.realtime_tracking import RealTimeTracker
@@ -94,10 +93,10 @@ def save_data(data):
 
 
 # Initialize All Plugins
-time_slot_manager = TimeSlotManager("transport.db")
-business_analytics = BusinessAnalytics("transport.db")
+time_slot_manager = TimeSlotManager()
+business_analytics = BusinessAnalytics(load_data)
 admin_user_manager = AdminUserManager(load_data, save_data)
-route_optimizer = RouteOptimizer("transport.db")
+route_optimizer = RouteOptimizer()
 real_time_tracker = RealTimeTracker()
 campaign_registrar = CampaignBulkRegistration(load_data, save_data)
 billing_mis = BillingMIS()
@@ -757,94 +756,7 @@ def complete_trip():
     else:
         return "In-progress booking not found", 404
 
-# ===== PLUGIN ROUTES =====
-
+if __name__ == '__main__':
 @app.route('/admin/time_slots')
-@login_required
-def admin_time_slots():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect(url_for('login'))
-    time_slot_mgr = TimeSlotManager("transport.db")
-    global_settings = time_slot_mgr.get_global_settings()
-    campaign_slots = time_slot_mgr.get_campaign_slots()
-    return render_template('admin_time_slots.html', global_settings=global_settings, campaign_slots=campaign_slots)
-
-@app.route('/admin/analytics')
-@login_required
-def admin_analytics():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect(url_for('login'))
-    business_analytics = BusinessAnalytics("transport.db")
-    metrics = business_analytics.get_dashboard_metrics()
-    return render_template('admin_analytics.html', metrics=metrics)
-
-@app.route('/admin/user_management')
-@login_required
-def admin_user_management():
-    user_mgr = UserManager("transport.db")
-    users = user_mgr.get_all_users()
-    return render_template('admin_user_management.html', users=users)
-    data = load_data()
-    return render_template('admin_user_management.html', users=users)
-
-@app.route('/admin/bulk_register')
-@login_required
-def admin_bulk_register():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect(url_for('login'))
-    return render_template('admin_bulk_register.html')
-
-
-
-# ===== BILLING ROUTES =====
-@app.route('/admin/billing')
-def admin_billing():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the billing template expects
-    overview = {
-        "total_revenue": 0, 
-        "pending_invoices": 0, 
-        "paid_invoices": 0,
-        "pending_amount": 0,
-        "revenue_trend": 0,
-        "completion_rate": 0
-    }
-    return render_template('admin_billing.html', overview=overview)
-
-# ===== ROUTE OPTIMIZER ROUTES =====  
-@app.route('/admin/route_optimizer')
-def admin_route_optimizer():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the optimizer template expects
-    overview = {
-        "total_routes": 0, 
-        "optimized_routes": 0, 
-        "fuel_savings": 0,
-        "total_distance": 0,
-        "time_savings": 0,
-        "optimization_rate": 0
-    }
-    return render_template('admin_route_optimizer.html', overview=overview)
-
-# ===== LIVE TRACKING ROUTES =====
-@app.route('/admin/live_tracking')
-def admin_live_tracking():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the tracking template expects
-    overview = {
-        "total_vehicles": 0, 
-        "active_vehicles": 0, 
-        "idle_vehicles": 0,
-        "avg_speed": 0,
-        "on_time_rate": 0,
-        "delivery_completion": 0
-    }
-    return render_template('admin_live_tracking.html', overview=overview)
-
-
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-

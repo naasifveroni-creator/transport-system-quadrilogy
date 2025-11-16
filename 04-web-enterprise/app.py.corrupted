@@ -794,57 +794,114 @@ def admin_bulk_register():
         return redirect(url_for('login'))
     return render_template('admin_bulk_register.html')
 
-
-
-# ===== BILLING ROUTES =====
-@app.route('/admin/billing')
-def admin_billing():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the billing template expects
-    overview = {
-        "total_revenue": 0, 
-        "pending_invoices": 0, 
-        "paid_invoices": 0,
-        "pending_amount": 0,
-        "revenue_trend": 0,
-        "completion_rate": 0
-    }
-    return render_template('admin_billing.html', overview=overview)
-
-# ===== ROUTE OPTIMIZER ROUTES =====  
-@app.route('/admin/route_optimizer')
-def admin_route_optimizer():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the optimizer template expects
-    overview = {
-        "total_routes": 0, 
-        "optimized_routes": 0, 
-        "fuel_savings": 0,
-        "total_distance": 0,
-        "time_savings": 0,
-        "optimization_rate": 0
-    }
-    return render_template('admin_route_optimizer.html', overview=overview)
-
-# ===== LIVE TRACKING ROUTES =====
-@app.route('/admin/live_tracking')
-def admin_live_tracking():
-    if not current_user.is_authenticated or not current_user.is_admin:
-        return redirect('/login')
-    # Provide ALL fields the tracking template expects
-    overview = {
-        "total_vehicles": 0, 
-        "active_vehicles": 0, 
-        "idle_vehicles": 0,
-        "avg_speed": 0,
-        "on_time_rate": 0,
-        "delivery_completion": 0
-    }
-    return render_template('admin_live_tracking.html', overview=overview)
-
-
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
+# ===== BILLING ROUTES =====
+from plugins.billing import Billing
+
+@app.route('/admin/billing')
+def admin_billing():
+    print("🚀 BILLING ROUTE CALLED")
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+
+    billing = Billing('transport.db')
+    overview = billing.get_billing_overview()
+    return render_template('admin_billing.html', overview=overview)
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    
+    billing = Billing('transport.db')
+    overview = billing.get_billing_overview()
+    return render_template('admin_billing.html', overview=overview)
+
+@app.route('/admin/billing/create_invoice', methods=['POST'])
+def create_invoice():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return jsonify({'success': False, 'error': 'Unauthorized'})
+    
+    try:
+        invoice_number = request.form.get('invoice_number')
+        customer_name = request.form.get('customer_name')
+        customer_email = request.form.get('customer_email')
+        amount = float(request.form.get('amount'))
+        due_date = request.form.get('due_date')
+        
+        billing = Billing('transport.db')
+        invoice_id = billing.create_invoice(invoice_number, customer_name, customer_email, amount, due_date)
+        return jsonify({'success': True, 'message': 'Invoice created', 'invoice_id': invoice_id})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+# ===== ROUTE OPTIMIZER ROUTES =====
+from plugins.route_optimizer import RouteOptimizer
+
+@app.route('/admin/route_optimizer')
+def admin_route_optimizer():
+    print("🚀 ROUTE OPTIMIZER CALLED")  
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+
+    optimizer = RouteOptimizer('transport.db')
+    overview = optimizer.get_route_overview()
+    return render_template('admin_route_optimizer.html', overview=overview)
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    
+    optimizer = RouteOptimizer('transport.db')
+    overview = optimizer.get_route_overview()
+    return render_template('admin_route_optimizer.html', overview=overview)
+
+@app.route('/admin/route_optimizer/optimize', methods=['POST'])
+def optimize_route():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return jsonify({'success': False, 'error': 'Unauthorized'})
+    
+    try:
+        route_name = request.form.get('route_name')
+        start_location = request.form.get('start_location')
+        end_location = request.form.get('end_location')
+        
+        optimizer = RouteOptimizer('transport.db')
+        route_id = optimizer.optimize_route(route_name, start_location, end_location)
+        return jsonify({'success': True, 'message': 'Route optimized', 'route_id': route_id})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+# ===== LIVE TRACKING ROUTES =====
+from plugins.live_tracking import LiveTracking
+
+@app.route('/admin/live_tracking')
+def admin_live_tracking():
+    print("🚀 LIVE TRACKING CALLED")
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+
+    tracking = LiveTracking('transport.db')
+    overview = tracking.get_live_overview()
+    return render_template('admin_live_tracking.html', overview=overview)
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    
+    tracking = LiveTracking('transport.db')
+    overview = tracking.get_live_overview()
+    return render_template('admin_live_tracking.html', overview=overview)
+
+@app.route('/admin/live_tracking/update_location', methods=['POST'])
+def update_vehicle_location():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return jsonify({'success': False, 'error': 'Unauthorized'})
+    
+    try:
+        vehicle_id = request.form.get('vehicle_id')
+        latitude = float(request.form.get('latitude'))
+        longitude = float(request.form.get('longitude'))
+        speed = float(request.form.get('speed', 0))
+        
+        tracking = LiveTracking('transport.db')
+        tracking.update_vehicle_location(vehicle_id, latitude, longitude, speed)
+        return jsonify({'success': True, 'message': 'Location updated'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Business Analytics - Admin Dashboard</title>
+    <style>
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+        .metric-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric-value { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .metric-label { color: #7f8c8d; font-size: 14px; }
+        .chart-container { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Business Analytics Dashboard</h1>
+    
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">{{ analytics.user_metrics.total_users }}</div>
+            <div class="metric-label">Total Users</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ analytics.user_metrics.total_drivers }}</div>
+            <div class="metric-label">Total Drivers</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ analytics.booking_metrics.completed_trips }}</div>
+            <div class="metric-label">Completed Trips</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">R{{ analytics.financial_metrics.estimated_revenue }}</div>
+            <div class="metric-label">Estimated Revenue</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Popular Routes</h3>
+        <ul>
+            {% for route in analytics.operational_metrics.popular_routes %}
+            <li>{{ route.route }}: {{ route.count }} trips</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+</body>
+</html>
